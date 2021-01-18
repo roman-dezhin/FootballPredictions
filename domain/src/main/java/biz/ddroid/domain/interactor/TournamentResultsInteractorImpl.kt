@@ -1,30 +1,29 @@
 package biz.ddroid.domain.interactor
 
+import biz.ddroid.domain.data.TournamentResultData
 import biz.ddroid.domain.exception.NetworkConnectionException
+import biz.ddroid.domain.exception.ServerUnavailableException
 import biz.ddroid.domain.repository.TournamentResultsRepository
 import java.lang.Exception
 
-class TournamentResultsInteractorImpl(private val repository: TournamentResultsRepository) : TournamentResultsInteractor{
-    override suspend fun fetch(reload: Boolean): Status {
-        return getData(reload, 3)
-    }
+class TournamentResultsInteractorImpl(
+    private val tournamentResultsRepository: TournamentResultsRepository
+    ) : TournamentResultsInteractor{
 
-    private suspend fun getData(reload: Boolean, retryCount: Int): Status =
+    override suspend fun fetch(reload: Boolean) = getData(reload, 3)
+
+    private suspend fun getData(reload: Boolean, retryCount: Int): Result<List<TournamentResultData>> =
         try {
-            val list = repository.getTournamentResults(reload)
-            if (list.isEmpty())
-                Status.NO_RESULTS
-            else
-                Status.SUCCESS
+            Result.Success(tournamentResultsRepository.getTournamentResults(reload))
         } catch (e: Exception) {
             e.printStackTrace()
             if (retryCount > 0) {
                 getData(retryCount > 1, retryCount - 1)
             } else {
                 if (e is NetworkConnectionException)
-                    Status.NO_CONNECTION
+                    Result.Error(NetworkConnectionException())
                 else
-                    Status.SERVICE_UNAVAILABLE
+                    Result.Error(ServerUnavailableException())
             }
         }
 }

@@ -3,9 +3,9 @@ package biz.ddroid.domain
 import biz.ddroid.domain.data.*
 import biz.ddroid.domain.exception.NetworkConnectionException
 import biz.ddroid.domain.exception.ServerUnavailableException
+import biz.ddroid.domain.interactor.Result
 import biz.ddroid.domain.interactor.TournamentResultsInteractor
 import biz.ddroid.domain.interactor.TournamentResultsInteractorImpl
-import biz.ddroid.domain.interactor.Status
 import biz.ddroid.domain.repository.TournamentResultsRepository
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
@@ -22,7 +22,7 @@ class TournamentResultsInteractorImplTest {
         runBlocking {
             val actual = interactor.fetch(false)
 
-            Assert.assertThat(actual, CoreMatchers.`is`(Status.NO_RESULTS))
+            Assert.assertThat(actual, CoreMatchers.`is`(Result.Success(emptyList())))
         }
     }
 
@@ -32,7 +32,11 @@ class TournamentResultsInteractorImplTest {
         runBlocking {
             val actual = interactor.fetch(false)
 
-            Assert.assertThat(actual, CoreMatchers.`is`(Status.SUCCESS))
+            Assert.assertThat(actual, CoreMatchers.`is`(Result.Success(
+                listOf(TournamentResultData(
+                    TournamentData(1, "name", false),
+                    emptyList()
+                )))))
         }
     }
 
@@ -41,9 +45,8 @@ class TournamentResultsInteractorImplTest {
         interactor = TournamentResultsInteractorImpl(NetworkExceptionTournamentResultsRepositoryImpl())
         runBlocking {
             val actual = interactor.fetch(false)
-
-            Assert.assertThat(actual, CoreMatchers.`is`(Status.NO_CONNECTION))
-        }
+            //TODO fix test
+            Assert.assertThat(actual, CoreMatchers.`is`(Result.Error(NetworkConnectionException())))        }
     }
 
     @Test
@@ -51,8 +54,8 @@ class TournamentResultsInteractorImplTest {
         interactor = TournamentResultsInteractorImpl(ServiceUnavailableExceptionTournamentResultsRepositoryImpl())
         runBlocking {
             val actual = interactor.fetch(false)
-
-            Assert.assertThat(actual, CoreMatchers.`is`(Status.SERVICE_UNAVAILABLE))
+            //TODO fix test
+            Assert.assertThat(actual, CoreMatchers.`is`(Result.Error(ServerUnavailableException())))
         }
     }
 }

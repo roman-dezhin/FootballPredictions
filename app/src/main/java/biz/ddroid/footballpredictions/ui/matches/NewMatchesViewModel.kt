@@ -5,13 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import biz.ddroid.domain.data.NewMatchData
-import biz.ddroid.domain.interactor.Status
+import biz.ddroid.domain.exception.NetworkConnectionException
 import biz.ddroid.footballpredictions.di.MainModule
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import biz.ddroid.domain.interactor.Result
 
 class NewMatchesViewModel : ViewModel() {
 
     private val interactor = MainModule.getNewMatchesInteractorImpl()
+
+    var error = MutableLiveData<String>()
 
     private val matches: MutableLiveData<List<NewMatchData>> by lazy {
         MutableLiveData<List<NewMatchData>>().also {
@@ -24,12 +28,15 @@ class NewMatchesViewModel : ViewModel() {
     }
 
     private fun loadMatches()  = viewModelScope.launch {
-        val (status, list) = interactor.getNewMatches(false)
-        when (status) {
-            Status.NO_RESULTS -> matches.value = list //showScreenWithId(R.id.no_results)
-            Status.NO_CONNECTION -> matches.value = list //showScreenWithId(R.id.no_connection)
-            Status.SERVICE_UNAVAILABLE -> matches.value = list //showScreenWithId(R.id.service_unavailable)
-            Status.SUCCESS -> matches.value = list //showScreenWithId(R.id.go_to_search_results)
+        val result = try {
+            interactor.fetch(false)
+        }
+        catch (e: Exception) {
+            Result.Error(e)
+        }
+        when (result) {
+            is Result.Success<List<NewMatchData>> -> matches.value = result.data //showScreenWithId(R.id.no_results)
+            else -> error.postValue(result.toString()) //showScreenWithId(R.id.go_to_search_results)
         }
 
     }

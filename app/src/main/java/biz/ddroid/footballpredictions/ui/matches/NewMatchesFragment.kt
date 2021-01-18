@@ -36,10 +36,16 @@ class NewMatchesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        val textView: TextView = requireView().findViewById(R.id.text)
         viewModel = ViewModelProvider(this).get(NewMatchesViewModel::class.java)
         viewModel.getMatches().observe(viewLifecycleOwner, { matches ->
-            val textView: TextView = requireView().findViewById(R.id.text)
-            textView.text = matches.toString()
+            if (matches.isEmpty())
+                textView.text = "No data"
+            else
+                textView.text = matches.toString()
+        })
+        viewModel.error.observe(viewLifecycleOwner, { error ->
+            textView.text = error
         })
     }
 

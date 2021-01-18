@@ -1,30 +1,29 @@
 package biz.ddroid.domain.interactor
 
+import biz.ddroid.domain.data.PredictionData
 import biz.ddroid.domain.exception.NetworkConnectionException
+import biz.ddroid.domain.exception.ServerUnavailableException
 import biz.ddroid.domain.repository.PredictionsRepository
 import java.lang.Exception
 
-class PredictionsInteractorImpl(private val repository: PredictionsRepository) : PredictionsInteractor{
-    override suspend fun fetch(reload: Boolean): Status {
-        return getData(reload, 3)
-    }
+class PredictionsInteractorImpl(
+    private val repository: PredictionsRepository
+    ) : PredictionsInteractor{
 
-    private suspend fun getData(reload: Boolean, retryCount: Int): Status =
+    override suspend fun fetch(reload: Boolean) = getData(reload, 3)
+
+    private suspend fun getData(reload: Boolean, retryCount: Int): Result<List<PredictionData>> =
         try {
-            val list = repository.getPredictions(reload)
-            if (list.isEmpty())
-                Status.NO_RESULTS
-            else
-                Status.SUCCESS
+            Result.Success(repository.getPredictions(reload))
         } catch (e: Exception) {
             e.printStackTrace()
             if (retryCount > 0) {
-                getData(retryCount > 1, retryCount - 1)
+                getData(retryCount > 0, retryCount - 1)
             } else {
                 if (e is NetworkConnectionException)
-                    Status.NO_CONNECTION
+                    Result.Error(NetworkConnectionException())
                 else
-                    Status.SERVICE_UNAVAILABLE
+                    Result.Error(ServerUnavailableException())
             }
         }
 }
