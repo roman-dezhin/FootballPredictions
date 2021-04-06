@@ -7,12 +7,15 @@ import biz.ddroid.data.net.ConnectionManager
 import biz.ddroid.data.net.ConnectionManagerImpl
 import biz.ddroid.data.net.ServiceInterceptor
 import biz.ddroid.footballpredictions.BuildConfig
+import com.franmontiel.persistentcookiejar.ClearableCookieJar
+import com.franmontiel.persistentcookiejar.PersistentCookieJar
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
 object NetworkModule {
@@ -20,9 +23,11 @@ object NetworkModule {
 
     lateinit var connectionManager: ConnectionManager
     private lateinit var retrofit: Retrofit
+    private lateinit var cookieJar: ClearableCookieJar
 
     fun initialize(app: Application) {
         connectionManager = ConnectionManagerImpl(getConnectivityManager(app))
+        cookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(app))
         retrofit = getRetrofit(getOkHttpClient())
     }
 
@@ -43,7 +48,7 @@ object NetworkModule {
         OkHttpClient().newBuilder()
             .addInterceptor(getLoggingInterceptor())
             .addInterceptor(ServiceInterceptor)
-            .cookieJar(JavaNetCookieJar(CookieManager()))
+            .cookieJar(cookieJar)
             .readTimeout(1, TimeUnit.MINUTES)
             .connectTimeout(1, TimeUnit.MINUTES)
             .build()

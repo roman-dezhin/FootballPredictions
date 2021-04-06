@@ -12,10 +12,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
-import biz.ddroid.data.net.ServiceInterceptor
 import biz.ddroid.footballpredictions.R
 import biz.ddroid.footballpredictions.di.MainModule
-import biz.ddroid.footballpredictions.ui.matches.NewMatchesViewModel
 
 class MainActivity : AppCompatActivity() {
 

@@ -54,13 +54,15 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     implementation 'androidx.work:work-runtime:2.5.0'
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
     //okhttp
     api "com.squareup.okhttp3:okhttp:$okhttp_version"
     api "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
-    api "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
-    implementation 'androidx.annotation:annotation:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+
 
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
