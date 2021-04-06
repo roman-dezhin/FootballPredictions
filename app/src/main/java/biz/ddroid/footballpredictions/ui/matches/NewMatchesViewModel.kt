@@ -29,14 +29,14 @@ class NewMatchesViewModel : ViewModel() {
 
     private fun loadMatches()  = viewModelScope.launch {
         val result = try {
-            interactor.fetch(false)
+            interactor.fetch(true)
         }
         catch (e: Exception) {
             Result.Error(e)
         }
         when (result) {
-            is Result.Success<List<NewMatchData>> -> matches.value = result.data //showScreenWithId(R.id.no_results)
-            else -> error.postValue(result.toString()) //showScreenWithId(R.id.go_to_search_results)
+            is Result.Success<List<NewMatchData>> -> matches.postValue(result.data)
+            else -> error.postValue(result.toString())
         }
 
     }

@@ -11,9 +11,9 @@ data class UserEntity(
 )
 
 data class TournamentsWins(
-    @SerializedName("und") val tournamentsWinsList: TournamentsWinsList
+    @SerializedName("und") val tournamentsWinsList: List<TournamentsWinsEntity>
 )
 
-data class TournamentsWinsList(
+data class TournamentsWinsEntity(
     @SerializedName("value") val wins: Int
 )

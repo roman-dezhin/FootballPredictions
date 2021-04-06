@@ -29,6 +29,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.6'
 
+    //okhttp
+    api "com.squareup.okhttp3:okhttp:$okhttp_version"
+
     //retrofit
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
     api "com.squareup.retrofit2:converter-gson:$retrofit_version"

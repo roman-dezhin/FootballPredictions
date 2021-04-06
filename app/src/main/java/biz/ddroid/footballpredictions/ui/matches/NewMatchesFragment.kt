@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import biz.ddroid.domain.data.NewMatchData
 
 import biz.ddroid.footballpredictions.R
+import biz.ddroid.footballpredictions.di.MainModule
 
 class NewMatchesFragment : Fragment() {
 
@@ -32,10 +34,6 @@ class NewMatchesFragment : Fragment() {
             val textView: TextView = view.findViewById(R.id.text)
             textView.text = getInt(ARG_OBJECT).toString()
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         val textView: TextView = requireView().findViewById(R.id.text)
         viewModel = ViewModelProvider(this).get(NewMatchesViewModel::class.java)
         viewModel.getMatches().observe(viewLifecycleOwner, { matches ->
@@ -48,5 +46,4 @@ class NewMatchesFragment : Fragment() {
             textView.text = error
         })
     }
-
 }

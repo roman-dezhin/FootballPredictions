@@ -21,11 +21,15 @@ class CloudNewMatchesDataStore(
             try {
                 val matchesAsync = matchesService.getNewMatchesAsync()
                 val result = matchesAsync.await()
-                matches = result.body()!!
-                matchesCache.put(matches)
+                if (result.isSuccessful) {
+                    matches = result.body()!!
+                    matchesCache.put(matches)
+                    matches
+                } else {
+                    throw Exception("Error: " + result.message() + ", code: " + result.code())
+                }
             } catch (exception: Exception) {
-                throw ServerUnavailableException()
+                throw exception
             }
-            matches
         }
 }

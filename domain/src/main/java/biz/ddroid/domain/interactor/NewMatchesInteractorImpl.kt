@@ -10,7 +10,7 @@ class NewMatchesInteractorImpl(
     private val newMatchesRepository: NewMatchesRepository
     ) : NewMatchesInteractor {
 
-    override suspend fun fetch(reload: Boolean) = getData(reload, 3)
+    override suspend fun fetch(reload: Boolean) = getData(reload, 0)
 
     private suspend fun getData(reload: Boolean, retryCount: Int): Result<List<NewMatchData>> =
         try {
@@ -23,7 +23,7 @@ class NewMatchesInteractorImpl(
                 if (e is NetworkConnectionException)
                     Result.Error(NetworkConnectionException())
                 else
-                    Result.Error(ServerUnavailableException())
+                    Result.Error(e)
             }
         }
 

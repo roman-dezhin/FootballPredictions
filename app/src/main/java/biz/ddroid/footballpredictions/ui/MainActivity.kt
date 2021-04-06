@@ -1,4 +1,4 @@
-package biz.ddroid.footballpredictions
+package biz.ddroid.footballpredictions.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -11,10 +11,16 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
+import biz.ddroid.data.net.ServiceInterceptor
+import biz.ddroid.footballpredictions.R
+import biz.ddroid.footballpredictions.di.MainModule
+import biz.ddroid.footballpredictions.ui.matches.NewMatchesViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var viewModel: UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +34,18 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_matches, R.id.nav_results), drawerLayout)
+            R.id.nav_matches, R.id.nav_results
+        ), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        viewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        if (!MainModule.isUserCached()) {
+            navController.previousBackStackEntry
+            navController.navigate(R.id.loginFragment)
+        } else {
+            viewModel.getUser()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -10,21 +10,22 @@ class NewMatchesCache(context: Context) : MatchesCache {
 
     private val sharedPreferences = context.getSharedPreferences("MatchesCache", Context.MODE_PRIVATE)
     private val gson = Gson()
+    private val key = "newMatches"
 
     override fun put(matches: List<MatchesEntity>) {
         val json = gson.toJson(matches)
-        sharedPreferences.edit().putString("newMatches", json).apply()
+        sharedPreferences.edit().putString(key, json).apply()
     }
 
     override fun get(): List<NewMatchesEntity> {
-        val json = sharedPreferences.getString("newMatches", "")
+        val json = sharedPreferences.getString(key, "")
         val type = object : TypeToken<List<NewMatchesEntity>>() {
         }.type
         return Gson().fromJson(json, type)
     }
 
     override fun isCached(): Boolean {
-        val value = sharedPreferences.getString("newMatches", null)
+        val value = sharedPreferences.getString(key, null)
         return value?.isNotEmpty() ?: false
     }
 }
