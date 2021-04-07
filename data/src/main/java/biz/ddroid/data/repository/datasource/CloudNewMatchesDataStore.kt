@@ -5,7 +5,6 @@ import biz.ddroid.data.entity.NewMatchesEntity
 import biz.ddroid.data.net.ConnectionManager
 import biz.ddroid.data.net.MatchesService
 import biz.ddroid.domain.exception.NetworkConnectionException
-import biz.ddroid.domain.exception.ServerUnavailableException
 
 class CloudNewMatchesDataStore(
     private val connectionManager: ConnectionManager,

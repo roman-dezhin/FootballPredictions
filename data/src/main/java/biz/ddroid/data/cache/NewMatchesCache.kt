@@ -8,7 +8,10 @@ import com.google.gson.reflect.TypeToken
 
 class NewMatchesCache(context: Context) : MatchesCache {
 
-    private val sharedPreferences = context.getSharedPreferences("MatchesCache", Context.MODE_PRIVATE)
+    private val sharedPreferences = context.getSharedPreferences(
+        "MatchesCache",
+        Context.MODE_PRIVATE
+    )
     private val gson = Gson()
     private val key = "newMatches"
 

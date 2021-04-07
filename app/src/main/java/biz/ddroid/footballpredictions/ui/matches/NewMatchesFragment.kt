@@ -6,13 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import biz.ddroid.domain.data.NewMatchData
-
 import biz.ddroid.footballpredictions.R
-import biz.ddroid.footballpredictions.di.MainModule
 
 class NewMatchesFragment : Fragment() {
 

@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import biz.ddroid.domain.data.NewMatchData
-import biz.ddroid.domain.exception.NetworkConnectionException
 import biz.ddroid.footballpredictions.di.MainModule
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import biz.ddroid.domain.interactor.Result
+import kotlinx.coroutines.Dispatchers
 
 class NewMatchesViewModel : ViewModel() {
 
@@ -27,9 +27,9 @@ class NewMatchesViewModel : ViewModel() {
         return matches
     }
 
-    private fun loadMatches()  = viewModelScope.launch {
+    private fun loadMatches()  = viewModelScope.launch(Dispatchers.IO) {
         val result = try {
-            interactor.fetch(true)
+            interactor.fetch(false)
         }
         catch (e: Exception) {
             Result.Error(e)
