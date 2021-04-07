@@ -2,29 +2,34 @@ package biz.ddroid.footballpredictions.di
 
 import android.app.Application
 import biz.ddroid.data.cache.NewMatchesCache
+import biz.ddroid.data.cache.PredictionsCache
 import biz.ddroid.data.cache.UserCache
 import biz.ddroid.data.cache.UserCacheImpl
 import biz.ddroid.data.entity.mapper.NewMatchDataMapper
+import biz.ddroid.data.entity.mapper.PredictionDataMapper
 import biz.ddroid.data.net.MatchesService
 import biz.ddroid.data.net.UserService
 import biz.ddroid.data.repository.NewMatchesRepositoryImpl
+import biz.ddroid.data.repository.PredictionsRepositoryImpl
 import biz.ddroid.data.repository.UserRepositoryImpl
-import biz.ddroid.data.repository.datasource.CloudNewMatchesDataStore
-import biz.ddroid.data.repository.datasource.DiskNewMatchesDataStore
-import biz.ddroid.data.repository.datasource.NewMatchesDataStoreFactoryImpl
-import biz.ddroid.data.repository.datasource.UserDataStore
+import biz.ddroid.data.repository.datasource.*
 import biz.ddroid.domain.interactor.*
 import biz.ddroid.domain.repository.NewMatchesRepository
+import biz.ddroid.domain.repository.PredictionsRepository
 import biz.ddroid.domain.repository.UserRepository
 
 object MainModule {
 
     private lateinit var config: DI.Config
     private lateinit var newMatchesCache: NewMatchesCache
+    private lateinit var predictionsCache: PredictionsCache
     private lateinit var userCache: UserCache
 
     private var newMatchesRepository: NewMatchesRepository? = null
     private var newMatchesInteractor: NewMatchesInteractor? = null
+
+    private var predictionsRepository: PredictionsRepository? = null
+    private var predictionsInteractor: PredictionsInteractor? = null
 
     private var userRepository: UserRepository? = null
     private var loginInteractor: LoginInteractor? = null
@@ -33,6 +38,7 @@ object MainModule {
     fun initialize(app: Application, configuration: DI.Config = DI.Config.RELEASE) {
         config = configuration
         newMatchesCache = NewMatchesCache(app)
+        predictionsCache = PredictionsCache(app)
         userCache = UserCacheImpl(app)
     }
 
@@ -42,6 +48,12 @@ object MainModule {
         if (config == DI.Config.RELEASE && newMatchesInteractor == null)
             newMatchesInteractor = makeNewMatchesInteractor(getMatchesRepository())
         return newMatchesInteractor!!
+    }
+
+    fun getPredictionsInteractorImpl(): PredictionsInteractor {
+        if (config == DI.Config.RELEASE && predictionsInteractor == null)
+            predictionsInteractor = makePredictionsInteractor(getPredictionsRepository())
+        return predictionsInteractor!!
     }
 
     fun getUserInteractor(): UserInteractor {
@@ -82,16 +94,36 @@ object MainModule {
         return newMatchesRepository!!
     }
 
-    private fun getDiskNewMatchesDataStore() = DiskNewMatchesDataStore(newMatchesCache)
+    private fun getNewMatchesDiskDataStore() = NewMatchesDiskDataStore(newMatchesCache)
 
-    private fun getCloudNewMatchesDataStore() = CloudNewMatchesDataStore(
+    private fun getNewMatchesCloudDataStore() = NewMatchesCloudDataStore(
         NetworkModule.connectionManager,
         NetworkModule.getService(MatchesService::class.java),
         newMatchesCache
     )
 
     private fun getNewMatchesDataStoreFactory() =
-        NewMatchesDataStoreFactoryImpl(newMatchesCache, getDiskNewMatchesDataStore(), getCloudNewMatchesDataStore())
+        NewMatchesDataStoreFactoryImpl(newMatchesCache, getNewMatchesDiskDataStore(), getNewMatchesCloudDataStore())
+
+    private fun makePredictionsInteractor(repository: PredictionsRepository) =
+        PredictionsInteractorImpl(repository)
+
+    private fun getPredictionsRepository(): PredictionsRepository {
+        if (predictionsRepository == null)
+            predictionsRepository = PredictionsRepositoryImpl(getPredictionsDataStoreFactory(), PredictionDataMapper())
+        return predictionsRepository!!
+    }
+
+    private fun getPredictionsDiskDataStore() = PredictionsDiskDataStore(predictionsCache)
+
+    private fun getPredictionsCloudDataStore() = PredictionsCloudDataStore(
+        NetworkModule.connectionManager,
+        NetworkModule.getService(MatchesService::class.java),
+        predictionsCache
+    )
+
+    private fun getPredictionsDataStoreFactory() =
+        PredictionsDataStoreFactoryImpl(predictionsCache, getPredictionsDiskDataStore(), getPredictionsCloudDataStore())
 
     //endregion
 }

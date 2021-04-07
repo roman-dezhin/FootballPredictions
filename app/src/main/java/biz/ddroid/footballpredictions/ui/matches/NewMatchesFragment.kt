@@ -29,7 +29,7 @@ class NewMatchesFragment : Fragment() {
             val textView: TextView = view.findViewById(R.id.text)
             textView.text = getInt(ARG_OBJECT).toString()
         }
-        val textView: TextView = requireView().findViewById(R.id.text)
+        val textView: TextView = requireView().findViewById(R.id.newMatches)
         viewModel = ViewModelProvider(this).get(NewMatchesViewModel::class.java)
         viewModel.getMatches().observe(viewLifecycleOwner, { matches ->
             if (matches.isEmpty())

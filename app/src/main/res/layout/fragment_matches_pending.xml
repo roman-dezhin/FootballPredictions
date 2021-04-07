@@ -6,6 +6,7 @@
     tools:context=".ui.matches.PendingMatchesFragment">
 
     <TextView
+        android:id="@+id/pending"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="pending matches here" />

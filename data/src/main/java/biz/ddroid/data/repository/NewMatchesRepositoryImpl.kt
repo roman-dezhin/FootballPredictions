@@ -6,13 +6,13 @@ import biz.ddroid.domain.data.NewMatchData
 import biz.ddroid.domain.repository.NewMatchesRepository
 
 class NewMatchesRepositoryImpl(
-    private val newMatchesDataStoreFactory: NewMatchesDataStoreFactory,
-    private val newMatchDataMapper: NewMatchDataMapper
+    private val dataStoreFactory: NewMatchesDataStoreFactory,
+    private val dataMapper: NewMatchDataMapper
 ) : NewMatchesRepository {
 
     override suspend fun getMatches(reload: Boolean): List<NewMatchData> {
         val priority = if (reload) NewMatchesDataStoreFactory.Priority.CLOUD else NewMatchesDataStoreFactory.Priority.CACHE
-        val dataStore = newMatchesDataStoreFactory.create(priority)
-        return newMatchDataMapper.map(dataStore.getNewMatchesEntityList())
+        val dataStore = dataStoreFactory.create(priority)
+        return dataMapper.map(dataStore.getNewMatchesEntityList())
     }
 }

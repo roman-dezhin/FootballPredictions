@@ -2,16 +2,16 @@ package biz.ddroid.data.repository.datasource
 
 import biz.ddroid.data.cache.NewMatchesCache
 
-class NewMatchesDataStoreFactoryImpl(private val matchesCache: NewMatchesCache,
-                                     private val diskMatchesDataStore: DiskNewMatchesDataStore,
-                                     private val cloudMatchesDataStore: CloudNewMatchesDataStore
+class NewMatchesDataStoreFactoryImpl(private val cache: NewMatchesCache,
+                                     private val diskDataStore: NewMatchesDiskDataStore,
+                                     private val cloudDataStore: NewMatchesCloudDataStore
 ) : NewMatchesDataStoreFactory {
 
     override fun create(priority: NewMatchesDataStoreFactory.Priority) =
-        if (priority == NewMatchesDataStoreFactory.Priority.CLOUD || !matchesCache.isCached())
-            cloudMatchesDataStore
+        if (priority == NewMatchesDataStoreFactory.Priority.CLOUD || !cache.isCached())
+            cloudDataStore
         else
-            diskMatchesDataStore
+            diskDataStore
 }
 
 interface NewMatchesDataStoreFactory {

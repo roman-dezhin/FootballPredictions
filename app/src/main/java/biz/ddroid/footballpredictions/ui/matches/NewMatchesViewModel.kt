@@ -38,6 +38,5 @@ class NewMatchesViewModel : ViewModel() {
             is Result.Success<List<NewMatchData>> -> matches.postValue(result.data)
             else -> error.postValue(result.toString())
         }
-
     }
 }

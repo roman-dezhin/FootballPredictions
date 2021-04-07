@@ -19,14 +19,14 @@ class PredictionDataMapper : Mapper<List<PredictionEntity>, List<PredictionData>
                 convertDate(source.dateTime),
                 source.tourId,
                 source.tourName,
-                source.stage,
+                source?.stage ?: "",
                 source.nameTeam1,
                 source.nameTeam2,
                 source.scoreTeam1,
                 source.scoreTeam2,
-                source.imageTeam1,
-                source.imageTeam2,
-                source.city
+                source?.imageTeam1 ?: "",
+                source?.imageTeam2 ?: "",
+                source?.city ?: ""
             ),
             PredictData(
                 source.predictionTeam1,

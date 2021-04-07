@@ -6,7 +6,7 @@ import biz.ddroid.data.net.ConnectionManager
 import biz.ddroid.data.net.MatchesService
 import biz.ddroid.domain.exception.NetworkConnectionException
 
-class CloudNewMatchesDataStore(
+class NewMatchesCloudDataStore(
     private val connectionManager: ConnectionManager,
     private val matchesService: MatchesService,
     private val matchesCache: MatchesCache
@@ -21,7 +21,7 @@ class CloudNewMatchesDataStore(
                 val matchesAsync = matchesService.getNewMatchesAsync()
                 val result = matchesAsync.await()
                 if (result.isSuccessful) {
-                    matches = result.body()!!
+                    matches = if (result.body() != null) result.body()!! else emptyList()
                     matchesCache.put(matches)
                     matches
                 } else {
