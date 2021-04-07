@@ -13,6 +13,6 @@ class NewMatchesRepositoryImpl(
     override suspend fun getMatches(reload: Boolean): List<NewMatchData> {
         val priority = if (reload) NewMatchesDataStoreFactory.Priority.CLOUD else NewMatchesDataStoreFactory.Priority.CACHE
         val dataStore = dataStoreFactory.create(priority)
-        return dataMapper.map(dataStore.getNewMatchesEntityList())
+        return dataMapper.map(dataStore.getEntityList())
     }
 }

@@ -27,7 +27,7 @@ class PendingMatchesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-            val textView: TextView = view.findViewById(R.id.text)
+            val textView: TextView = view.findViewById(R.id.pending)
             textView.text = getInt(ARG_OBJECT).toString()
         }
         val textView: TextView = requireView().findViewById(R.id.pending)

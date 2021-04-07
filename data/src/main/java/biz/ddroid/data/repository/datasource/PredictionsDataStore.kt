@@ -4,6 +4,6 @@ import biz.ddroid.data.entity.PredictionEntity
 
 interface PredictionsDataStore {
 
-    suspend fun getPredictionsEntityList(): List<PredictionEntity>
+    suspend fun getEntityList(): List<PredictionEntity>
 
 }

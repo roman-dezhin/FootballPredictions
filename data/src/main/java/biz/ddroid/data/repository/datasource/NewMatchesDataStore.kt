@@ -4,6 +4,6 @@ import biz.ddroid.data.entity.NewMatchesEntity
 
 interface NewMatchesDataStore {
 
-    suspend fun getNewMatchesEntityList(): List<NewMatchesEntity>
+    suspend fun getEntityList(): List<NewMatchesEntity>
 
 }

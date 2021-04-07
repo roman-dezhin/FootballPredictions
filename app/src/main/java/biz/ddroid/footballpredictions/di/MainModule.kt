@@ -1,21 +1,21 @@
 package biz.ddroid.footballpredictions.di
 
 import android.app.Application
-import biz.ddroid.data.cache.NewMatchesCache
-import biz.ddroid.data.cache.PredictionsCache
-import biz.ddroid.data.cache.UserCache
-import biz.ddroid.data.cache.UserCacheImpl
+import biz.ddroid.data.cache.*
 import biz.ddroid.data.entity.mapper.NewMatchDataMapper
 import biz.ddroid.data.entity.mapper.PredictionDataMapper
+import biz.ddroid.data.entity.mapper.ResultDataMapper
 import biz.ddroid.data.net.MatchesService
 import biz.ddroid.data.net.UserService
 import biz.ddroid.data.repository.NewMatchesRepositoryImpl
 import biz.ddroid.data.repository.PredictionsRepositoryImpl
+import biz.ddroid.data.repository.ResultsRepositoryImpl
 import biz.ddroid.data.repository.UserRepositoryImpl
 import biz.ddroid.data.repository.datasource.*
 import biz.ddroid.domain.interactor.*
 import biz.ddroid.domain.repository.NewMatchesRepository
 import biz.ddroid.domain.repository.PredictionsRepository
+import biz.ddroid.domain.repository.ResultsRepository
 import biz.ddroid.domain.repository.UserRepository
 
 object MainModule {
@@ -23,6 +23,7 @@ object MainModule {
     private lateinit var config: DI.Config
     private lateinit var newMatchesCache: NewMatchesCache
     private lateinit var predictionsCache: PredictionsCache
+    private lateinit var resultsCache: ResultsCache
     private lateinit var userCache: UserCache
 
     private var newMatchesRepository: NewMatchesRepository? = null
@@ -30,6 +31,9 @@ object MainModule {
 
     private var predictionsRepository: PredictionsRepository? = null
     private var predictionsInteractor: PredictionsInteractor? = null
+
+    private var resultsRepository: ResultsRepository? = null
+    private var resultsInteractor: ResultsInteractor? = null
 
     private var userRepository: UserRepository? = null
     private var loginInteractor: LoginInteractor? = null
@@ -39,6 +43,7 @@ object MainModule {
         config = configuration
         newMatchesCache = NewMatchesCache(app)
         predictionsCache = PredictionsCache(app)
+        resultsCache = ResultsCache(app)
         userCache = UserCacheImpl(app)
     }
 
@@ -54,6 +59,12 @@ object MainModule {
         if (config == DI.Config.RELEASE && predictionsInteractor == null)
             predictionsInteractor = makePredictionsInteractor(getPredictionsRepository())
         return predictionsInteractor!!
+    }
+
+    fun getResultsInteractorImpl(): ResultsInteractor {
+        if (config == DI.Config.RELEASE && resultsInteractor == null)
+            resultsInteractor = makeResultsInteractor(getResultsRepository())
+        return resultsInteractor!!
     }
 
     fun getUserInteractor(): UserInteractor {
@@ -125,5 +136,26 @@ object MainModule {
     private fun getPredictionsDataStoreFactory() =
         PredictionsDataStoreFactoryImpl(predictionsCache, getPredictionsDiskDataStore(), getPredictionsCloudDataStore())
 
-    //endregion
+
+    private fun makeResultsInteractor(repository: ResultsRepository) =
+        ResultsInteractorImpl(repository)
+
+    private fun getResultsRepository(): ResultsRepository {
+        if (resultsRepository == null)
+            resultsRepository = ResultsRepositoryImpl(getResultsDataStoreFactory(), ResultDataMapper())
+        return resultsRepository!!
+    }
+
+    private fun getResultsDiskDataStore() = ResultsDiskDataStore(resultsCache)
+
+    private fun getResultsCloudDataStore() = ResultsCloudDataStore(
+        NetworkModule.connectionManager,
+        NetworkModule.getService(MatchesService::class.java),
+        resultsCache
+    )
+
+    private fun getResultsDataStoreFactory() =
+        ResultsDataStoreFactoryImpl(resultsCache, getResultsDiskDataStore(), getResultsCloudDataStore())
+
+//endregion
 }

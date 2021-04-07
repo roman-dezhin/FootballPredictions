@@ -13,6 +13,6 @@ class PredictionsRepositoryImpl(
     override suspend fun getPredictions(reload: Boolean): List<PredictionData> {
         val priority = if (reload) PredictionsDataStoreFactory.Priority.CLOUD else PredictionsDataStoreFactory.Priority.CACHE
         val dataStore = dataStoreFactory.create(priority)
-        return dataMapper.map(dataStore.getPredictionsEntityList())
+        return dataMapper.map(dataStore.getEntityList())
     }
 }

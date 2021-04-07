@@ -10,20 +10,13 @@ class TournamentResultsInteractorImpl(
     private val tournamentResultsRepository: TournamentResultsRepository
     ) : TournamentResultsInteractor{
 
-    override suspend fun fetch(reload: Boolean) = getData(reload, 3)
-
-    private suspend fun getData(reload: Boolean, retryCount: Int): Result<List<TournamentResultData>> =
+    override suspend fun fetch(reload: Boolean): Result<List<TournamentResultData>> =
         try {
             Result.Success(tournamentResultsRepository.getTournamentResults(reload))
         } catch (e: Exception) {
-            e.printStackTrace()
-            if (retryCount > 0) {
-                getData(retryCount > 1, retryCount - 1)
-            } else {
-                if (e is NetworkConnectionException)
-                    Result.Error(NetworkConnectionException())
-                else
-                    Result.Error(ServerUnavailableException())
-            }
+            if (e is NetworkConnectionException)
+                Result.Error(NetworkConnectionException())
+            else
+                Result.Error(e)
         }
 }

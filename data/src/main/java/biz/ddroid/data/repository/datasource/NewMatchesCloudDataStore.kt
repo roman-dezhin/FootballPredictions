@@ -12,7 +12,7 @@ class NewMatchesCloudDataStore(
     private val matchesCache: MatchesCache
 ) : NewMatchesDataStore {
 
-    override suspend fun getNewMatchesEntityList(): List<NewMatchesEntity> =
+    override suspend fun getEntityList(): List<NewMatchesEntity> =
         if (connectionManager.isNetworkAbsent()) {
             throw NetworkConnectionException()
         } else {
