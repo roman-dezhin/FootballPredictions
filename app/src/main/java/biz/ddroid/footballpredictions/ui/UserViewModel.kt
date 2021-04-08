@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import biz.ddroid.domain.data.UserData
 import biz.ddroid.domain.interactor.Result
 import biz.ddroid.footballpredictions.di.MainModule
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.Exception
 
@@ -20,11 +21,13 @@ class UserViewModel : ViewModel()  {
         }
     }
 
+    fun isCached(): Boolean = MainModule.isUserCached()
+
     fun getUser(): LiveData<UserData> {
         return user
     }
 
-    private fun fetch() = viewModelScope.launch {
+    private fun fetch() = viewModelScope.launch(Dispatchers.IO) {
         val result = try {
             interactor.fetch()
         }

@@ -11,14 +11,11 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
 import biz.ddroid.footballpredictions.R
-import biz.ddroid.footballpredictions.di.MainModule
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var viewModel: UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,14 +33,6 @@ class MainActivity : AppCompatActivity() {
         ), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-        viewModel = ViewModelProvider(this).get(UserViewModel::class.java)
-        if (!MainModule.isUserCached()) {
-            navController.previousBackStackEntry
-            navController.navigate(R.id.loginFragment)
-        } else {
-            viewModel.getUser()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

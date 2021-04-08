@@ -15,15 +15,19 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.navigation.findNavController
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import biz.ddroid.domain.data.LoginRequestData
 
 import biz.ddroid.footballpredictions.R
 
 class LoginFragment : Fragment() {
+    companion object {
+        const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
+    }
 
     private lateinit var loginViewModel: LoginViewModel
+    private lateinit var savedStateHandle: SavedStateHandle
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +39,10 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
+        savedStateHandle.set(LOGIN_SUCCESSFUL, false)
+
         loginViewModel = ViewModelProvider(this)
             .get(LoginViewModel::class.java)
 
@@ -112,9 +120,9 @@ class LoginFragment : Fragment() {
 
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome) + model.displayName
-        // TODO : initiate successful logged in experience
         val appContext = context?.applicationContext ?: return
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
+        savedStateHandle.set(LOGIN_SUCCESSFUL, true)
         parentFragment?.findNavController()?.popBackStack()
     }
 
