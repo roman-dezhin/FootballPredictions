@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.results.ResultsFragment">
+    tools:context=".ui.statistic.StatisticFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Results" />
+        android:text="Statistic" />
 
 </FrameLayout>

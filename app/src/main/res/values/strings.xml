@@ -9,6 +9,8 @@
 
     <string name="menu_matches">Matches</string>
     <string name="menu_results">Results</string>
+    <string name="menu_statistics">Statistics</string>
+    <string name="menu_profile">Profile</string>
 
     <string name="tab_title_matches_new">New</string>
     <string name="tab_title_matches_pending">Predictions</string>

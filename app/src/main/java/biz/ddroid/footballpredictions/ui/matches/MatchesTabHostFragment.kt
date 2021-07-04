@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import biz.ddroid.footballpredictions.R
 import biz.ddroid.footballpredictions.ui.UserViewModel
-import biz.ddroid.footballpredictions.ui.login.LoginFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -24,24 +22,6 @@ class MatchesTabHostFragment : Fragment() {
     private lateinit var matchesTabAdapter: MatchesTabAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val navController = findNavController()
-        val currentBackStackEntry = navController.currentBackStackEntry!!
-        val savedStateHandle = currentBackStackEntry.savedStateHandle
-        savedStateHandle.getLiveData<Boolean>(LoginFragment.LOGIN_SUCCESSFUL)
-            .observe(currentBackStackEntry, { success ->
-                if (!success) {
-                    val startDestination = navController.graph.startDestination
-                    val navOptions = NavOptions.Builder()
-                        .setPopUpTo(startDestination, true)
-                        .build()
-                    navController.navigate(startDestination, null, navOptions)
-                }
-            })
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +35,7 @@ class MatchesTabHostFragment : Fragment() {
 
         val navController = findNavController()
         if (!userViewModel.isCached()) {
-            navController.navigate(R.id.loginFragment)
+            navController.navigate(R.id.LoginFragment)
         } else {
             userViewModel.getUser()
         }

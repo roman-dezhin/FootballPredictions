@@ -15,19 +15,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import biz.ddroid.domain.data.LoginRequestData
 
 import biz.ddroid.footballpredictions.R
 
 class LoginFragment : Fragment() {
-    companion object {
-        const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
-    }
 
     private lateinit var loginViewModel: LoginViewModel
-    private lateinit var savedStateHandle: SavedStateHandle
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,9 +35,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(LOGIN_SUCCESSFUL, false)
 
         loginViewModel = ViewModelProvider(this)
             .get(LoginViewModel::class.java)
@@ -122,8 +115,13 @@ class LoginFragment : Fragment() {
         val welcome = getString(R.string.welcome) + model.displayName
         val appContext = context?.applicationContext ?: return
         Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
-        savedStateHandle.set(LOGIN_SUCCESSFUL, true)
-        parentFragment?.findNavController()?.popBackStack()
+        view?.clearFocus() // hide keyboard todo: find a more elegant solution
+        val navController = findNavController()
+        val startDestination = navController.graph.startDestination
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(startDestination, true)
+            .build()
+        navController.navigate(R.id.MainFragment, null, navOptions)
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/matchesFragment"
+        android:icon="@drawable/ic_menu_matches"
+        android:contentDescription="@string/menu_matches"
+        android:title="@string/menu_matches" />
+    <item
+        android:id="@+id/resultsFragment"
+        android:icon="@drawable/ic_menu_results"
+        android:contentDescription="@string/menu_results"
+        android:title="@string/menu_results" />
+    <item
+        android:id="@+id/statisticFragment"
+        android:icon="@drawable/ic_menu_statistics"
+        android:contentDescription="@string/menu_statistics"
+        android:title="@string/menu_statistics" />
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/ic_menu_profile"
+        android:contentDescription="@string/menu_profile"
+        android:title="@string/menu_profile" />
+</menu>
